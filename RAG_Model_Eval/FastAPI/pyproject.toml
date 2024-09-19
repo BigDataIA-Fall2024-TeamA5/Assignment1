@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "fastapi"
+version = "0.2.0"
+description = "This is my FastAPI part to connect the streamlit application to openai."
+authors = ["Saurabh <vyawahare.s@northeastern.edu>, Shreya <bage.s@northeastern.edu>"]
+license = "MIT License"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+requests = "openai"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
