@@ -1,25 +1,25 @@
-import psycopg2
 import boto3
 import os
+import psycopg2
 import pandas as pd
 from io import StringIO
 
-# S3 connection setup (use environment variables for safety)
+# S3 connection setup
 def connect_to_s3():
     return boto3.client(
         's3',
         aws_access_key_id=os.getenv("AWS_ACCESS_KEY_ID"),
         aws_secret_access_key=os.getenv("AWS_SECRET_ACCESS_KEY"),
-        region_name=os.getenv("AWS_REGION", "your-region")  # Set your AWS region here
+        region_name=os.getenv("AWS_REGION", "us-east-2")  # Set correct region
     )
 
-# PostgreSQL connection setup (use environment variables for safety)
+# PostgreSQL connection setup
 def connect_to_postgresql():
     return psycopg2.connect(
-        host=os.getenv("POSTGRES_HOST", "your_host"),
-        database=os.getenv("POSTGRES_DB", "your_dbname"),
-        user=os.getenv("POSTGRES_USER", "your_username"),
-        password=os.getenv("POSTGRES_PASSWORD", "your_password"),
+        host=os.getenv("POSTGRES_HOST", "postgresqldb.cb4iuicksa3s.us-east-2.rds.amazonaws.com"),
+        database=os.getenv("POSTGRES_DB", "damg7245_bigdata_group5_assignment1"),
+        user=os.getenv("POSTGRES_USER", "postgresData"),
+        password=os.getenv("POSTGRES_PASSWORD", "postgresql123"),
         port=os.getenv("POSTGRES_PORT", "5432")
     )
 
@@ -36,24 +36,51 @@ def create_table(cursor, table_name):
         annotator_metadata JSONB
     )
     ''')
+import json
+import numpy as np
+
+# Clean and convert Annotator Metadata to valid JSON
+def clean_annotator_metadata(metadata):
+    # If metadata is a string, try to convert it to a JSON object
+    if isinstance(metadata, str):
+        try:
+            metadata = json.loads(metadata)
+        except json.JSONDecodeError:
+            print(f"Invalid JSON format for metadata: {metadata}")
+            return None  # Handle the error case as you see fit
+    
+    # Check for NaN or other invalid values
+    for key, value in metadata.items():
+        if isinstance(value, float) and np.isnan(value):
+            metadata[key] = None  # Replace NaN with None
+    
+    return metadata
 
 # Insert a record into the PostgreSQL table
 def insert_into_postgresql(cursor, table_name, record):
-    insert_query = f'''
-    INSERT INTO {table_name} (task_id, question, level, final_answer, file_name, file_path, annotator_metadata)
-    VALUES (%s, %s, %s, %s, %s, %s, %s)
-    ON CONFLICT (task_id) DO NOTHING;
-    '''
-    cursor.execute(insert_query, (
-        record["task_id"],
-        record["Question"],
-        record["Level"],
-        record["Final answer"],
-        record["file_name"],
-        record["file_path"],
-        record["Annotator Metadata"]
-    ))
-
+    # Clean the metadata field and convert it to valid JSON
+    annotator_metadata = clean_annotator_metadata(record["Annotator Metadata"])
+    
+    # Ensure annotator_metadata is properly formatted
+    if annotator_metadata is not None:
+        annotator_metadata_json = json.dumps(annotator_metadata)
+    
+        insert_query = f'''
+        INSERT INTO {table_name} (task_id, question, level, final_answer, file_name, file_path, annotator_metadata)
+        VALUES (%s, %s, %s, %s, %s, %s, %s)
+        ON CONFLICT (task_id) DO NOTHING;
+        '''
+        cursor.execute(insert_query, (
+            record["task_id"],
+            record["Question"],
+            record["Level"],
+            record["Final answer"],
+            record["file_name"],
+            record["file_path"],
+            annotator_metadata_json  # Insert valid JSON here
+        ))
+    else:
+        print(f"Skipping record {record['task_id']} due to invalid metadata.")
 # Load data from S3
 def load_s3_file(s3, bucket_name, file_key):
     response = s3.get_object(Bucket=bucket_name, Key=file_key)
@@ -62,13 +89,13 @@ def load_s3_file(s3, bucket_name, file_key):
 
 def main():
     # S3 and file details
-    bucket_name = "your_bucket_name"
-    file1_key = "path/to/your_first_file.csv"  # First dataset file key in S3
-    file2_key = "path/to/your_second_file.csv"  # Second dataset file key in S3
+    bucket_name = "ragmodelbucket-fall2024-group5"
+    file1_key = "gaia_test_dataset.csv"  # First dataset file key in S3
+    file2_key = "gaia_validation_dataset.csv"  # Second dataset file key in S3
 
     # Table names for PostgreSQL
-    table1_name = "gaia_dataset_1"
-    table2_name = "gaia_dataset_2"
+    table1_name = "gaia_test"
+    table2_name = "gaia_validation"
 
     # Connect to S3
     s3 = connect_to_s3()
