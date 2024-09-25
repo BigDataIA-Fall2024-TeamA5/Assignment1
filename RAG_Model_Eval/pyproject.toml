@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "rag-model-eval"
+version = "0.1.0"
+description = "Main dependencies for the project"
+authors = ["Saurabh <vyawahare.s@northeastern.edu>, Shreya <bage.s@northeastern.edu>"]
+license = "MIT license"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+"boto3" = "^1.26.35"
+psycopg2-binary = "^2.9.9"
+streamlit = "^1.38.0"
+bcrypt = "^4.2.0"
+python-dotenv = "^1.0.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

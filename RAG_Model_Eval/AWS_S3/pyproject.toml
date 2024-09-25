@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "aws-s3"
+version = "0.1.0"
+description = "aws database dependencies"
+authors = ["Aniket <patole.an@northeastern.edu>"]
+license = "MIT License"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+boto3 = "^1.35.24"
+psycopg2-binary = "^2.9.9"
+datasets = "^3.0.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
