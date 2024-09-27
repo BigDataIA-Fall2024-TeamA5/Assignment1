@@ -1,205 +1,3 @@
-"""import streamlit as st
-
-# Function for application page
-def application_page():
-    # Add logout button in the sidebar
-    with st.sidebar:
-        if st.button("Logout"):
-            for key in st.session_state.keys():
-                del st.session_state[key]
-            st.rerun()  # Use st.rerun instead of experimental_rerun for logout.
-
-    st.subheader(f"Welcome, {st.session_state['user']}!")
-
-    # Dropdown to select a test case from GAIA dataset
-    test_cases = ["Test Case 1", "Test Case 2", "Test Case 3"]  # Replace with real test cases
-    selected_case = st.selectbox("Select a test case", test_cases)
-
-    # Create two columns for the buttons
-    col1, col2 = st.columns([2, 10])
-
-    # Button to validate the selected test case in the first column
-    with col1:
-        if st.button("Validate"):
-            st.write(f"Validating: {selected_case}")
-            # Logic for validating the selected test case
-
-    # Visualization button placed slightly lower and in the second column
-    with col2:
-        if st.button("Visualization"):
-            st.write("Visualization functionality will be added here.")
-            # Logic for visualization
-
-    # Placeholder for future navigation (additional pages)
-    if st.button("Go to Other Page"):
-        st.write("This button will navigate to a new page in the future.")
-
-
-import streamlit as st
-import psycopg2
-import os
-from dotenv import load_dotenv
-
-# Load environment variables from .env file
-load_dotenv()
-
-# Function to connect to PostgreSQL and fetch test cases
-def get_test_cases_from_db():
-    try:
-        # Connect to PostgreSQL using environment variables
-        conn = psycopg2.connect(
-            host=os.getenv("POSTGRES_HOST"),
-            database=os.getenv("POSTGRES_DB"),
-            user=os.getenv("POSTGRES_USER"),
-            password=os.getenv("POSTGRES_PASSWORD"),
-            port=os.getenv("POSTGRES_PORT")
-        )
-        cursor = conn.cursor()
-
-        # Execute the query to fetch the 'Question' column from 'gaia_validation' table
-        cursor.execute("SELECT Question FROM gaia_validation")
-        rows = cursor.fetchall()
-
-        # Close the connection
-        cursor.close()
-        conn.close()
-
-        # Return a list of questions (test cases)
-        return [row[0] for row in rows]  # Extract the first column (Question)
-    
-    except Exception as e:
-        st.error(f"Error fetching test cases: {e}")
-        return []
-
-# Function for the application page
-def application_page():
-    # Add logout button in the sidebar
-    with st.sidebar:
-        if st.button("Logout"):
-            for key in st.session_state.keys():
-                del st.session_state[key]
-            st.rerun()  # Use st.rerun instead of experimental_rerun for logout.
-
-    st.subheader(f"Welcome, {st.session_state['user']}!")
-
-    # Fetch test cases from PostgreSQL
-    test_cases = get_test_cases_from_db()
-    
-    if test_cases:
-        # Dropdown to select a test case from the fetched data
-        selected_case = st.selectbox("Select a test case", test_cases)
-
-        # Create two columns for the buttons
-        col1, col2 = st.columns([2, 10])
-
-        # Button to validate the selected test case in the first column
-        with col1:
-            if st.button("Validate"):
-                st.write(f"Validating: {selected_case}")
-                # Logic for validating the selected test case
-
-        # Visualization button placed slightly lower and in the second column
-        with col2:
-            if st.button("Visualization"):
-                st.write("Visualization functionality will be added here.")
-                # Logic for visualization
-
-        # Placeholder for future navigation (additional pages)
-        if st.button("Go to Other Page"):
-            st.write("This button will navigate to a new page in the future.")
-    else:
-        st.warning("No test cases available.")
-
-if __name__ == "__main__":
-    application_page()
-    """
- # -- working application page -- #
-"""import streamlit as st
-import psycopg2
-import os
-from dotenv import load_dotenv
-
-# Load environment variables from .env file
-load_dotenv()
-
-# Function to connect to PostgreSQL and fetch test cases
-def get_test_cases_from_db():
-    try:
-        # Connect to PostgreSQL using environment variables
-        conn = psycopg2.connect(
-            host=os.getenv("POSTGRES_HOST"),
-            database=os.getenv("POSTGRES_DB"),
-            user=os.getenv("POSTGRES_USER"),
-            password=os.getenv("POSTGRES_PASSWORD"),
-            port=os.getenv("POSTGRES_PORT")
-        )
-        cursor = conn.cursor()
-
-        # Execute the query to fetch the 'Question' column from 'gaia_validation' table
-        cursor.execute("SELECT Question FROM gaia_validation")
-        rows = cursor.fetchall()
-
-        # Close the connection
-        cursor.close()
-        conn.close()
-
-        # Return a list of questions (test cases)
-        return [row[0] for row in rows]  # Extract the first column (Question)
-    
-    except Exception as e:
-        st.error(f"Error fetching test cases: {e}")
-        return []
-
-# Function for the application page
-def application_page():
-    # Add logout button in the sidebar
-    with st.sidebar:
-        if st.button("Logout"):
-            for key in st.session_state.keys():
-                del st.session_state[key]
-            st.rerun()  # Use st.rerun instead of experimental_rerun for logout.
-
-    # Display welcome message
-    st.subheader(f"Welcome, {st.session_state.get('user', 'User')}!")  # Using .get() for fallback
-
-    # Fetch test cases from PostgreSQL
-    test_cases = get_test_cases_from_db()
-    
-    if test_cases:
-        # Dropdown to select a test case from the fetched data
-        selected_case = st.selectbox("Select a test case", test_cases)
-
-        # Create two columns for the buttons
-        col1, col2 = st.columns([2, 10])
-
-        # Button to validate the selected test case in the first column
-        with col1:
-            if st.button("Validate"):
-                st.write(f"Validating: {selected_case}")
-                # Logic for validating the selected test case (future implementation)
-
-        # Visualization button placed slightly lower and in the second column
-        with col2:
-            if st.button("Visualization"):
-                st.write("Visualization functionality will be added here.")
-                # Logic for visualization (future implementation)
-
-        # Placeholder for future navigation (additional pages)
-        if st.button("Go to Other Page"):
-            st.write("This button will navigate to a new page in the future.")
-    else:
-        st.warning("No test cases available.")
-
-# Main execution of the Streamlit app
-if __name__ == "__main__":
-    # Check if user is logged in before showing the application page
-    if 'user' in st.session_state:
-        application_page()
-    else:
-        st.error("You need to be logged in to view this page.")"""
-
-# -- with OPenai api code -- #
-
 import streamlit as st
 import psycopg2
 import os
@@ -209,6 +7,12 @@ from openai import OpenAI
 # Load environment variables from .env file
 load_dotenv()
 
+# Function to log out by clearing the session state
+def logout():
+    for key in st.session_state.keys():
+        del st.session_state[key]
+    st.rerun()
+
 # Function to connect to PostgreSQL and fetch test cases
 def get_test_cases_from_db():
     try:
@@ -220,17 +24,17 @@ def get_test_cases_from_db():
             port=os.getenv("POSTGRES_PORT")
         )
         cursor = conn.cursor()
-        cursor.execute("SELECT Question FROM gaia_validation")
+        cursor.execute("SELECT task_id, question FROM gaia_validation")
         rows = cursor.fetchall()
         cursor.close()
         conn.close()
-        return [row[0] for row in rows]  # Return list of questions
+        return rows  # Return list of task_id and questions
     except Exception as e:
         st.error(f"Error fetching test cases: {e}")
         return []
 
-# Function to fetch the correct answer from the database
-def get_correct_answer_from_db(test_case):
+# Function to fetch the correct answer and annotator metadata from the database
+def get_correct_answer_and_metadata_from_db(test_case):
     try:
         conn = psycopg2.connect(
             host=os.getenv("POSTGRES_HOST"),
@@ -240,68 +44,178 @@ def get_correct_answer_from_db(test_case):
             port=os.getenv("POSTGRES_PORT")
         )
         cursor = conn.cursor()
-        cursor.execute('SELECT Final answer FROM gaia_validation WHERE Question = %s', (test_case,))
+        cursor.execute('SELECT final_answer, annotator_metadata FROM gaia_validation WHERE question = %s', (test_case,))
         row = cursor.fetchone()
         cursor.close()
         conn.close()
-        return row[0] if row else "No correct answer found."
+        return row if row else ("No correct answer found.", None)
     except Exception as e:
         st.error(f"Error fetching correct answer: {e}")
-        return None
+        return None, None
+
+# Function to store the validation result in the gaia_validation_dashboard
+def store_validation_result(task_id, validated=False, validated_with_help=False, not_validated=False):
+    try:
+        conn = psycopg2.connect(
+            host=os.getenv("POSTGRES_HOST"),
+            database=os.getenv("POSTGRES_DB"),
+            user=os.getenv("POSTGRES_USER"),
+            password=os.getenv("POSTGRES_PASSWORD"),
+            port=os.getenv("POSTGRES_PORT")
+        )
+        cursor = conn.cursor()
+
+        cursor.execute("""
+            INSERT INTO gaia_validation_dashboard (task_id, validated, validated_with_help, not_validated)
+            VALUES (%s, %s, %s, %s)
+            ON CONFLICT (task_id) 
+            DO UPDATE SET validated = EXCLUDED.validated, validated_with_help = EXCLUDED.validated_with_help, not_validated = EXCLUDED.not_validated
+        """, (task_id, validated, validated_with_help, not_validated))
+
+        conn.commit()
+        cursor.close()
+        conn.close()
+        st.success(f"Validation result stored for task ID: {task_id}")
+    except Exception as e:
+        st.error(f"Error storing validation result: {e}")
 
 # Main function for the application page
 def application_page():
     client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
+    # Add a sidebar with a logout button
+    with st.sidebar:
+        if st.button("Logout"):
+            logout()
+
     # Fetch test cases
     test_cases = get_test_cases_from_db()
 
     if test_cases:
+        # Create a dictionary of test cases for easy lookup
+        test_case_dict = {row[1]: row[0] for row in test_cases}
+
         # Step 1: Test Case Selection
-        selected_case = st.selectbox("Select a test case", test_cases, key="test_case_select")
+        selected_case = st.selectbox("Select a test case", list(test_case_dict.keys()), key="test_case_select")
+
+        # Clear session states when a new test case is selected
+        if 'selected_case' not in st.session_state or st.session_state['selected_case'] != selected_case:
+            st.session_state['selected_case'] = selected_case
+            st.session_state['show_hint'] = False  # Reset this flag for a new test case
+            st.session_state['hide_chatgpt_response'] = False  # Ensure we are not hiding initially
+            st.session_state['hide_validation_buttons'] = False  # Ensure the buttons are visible initially
+            st.session_state['hide_validate_button'] = False  # Ensure the validate button is visible initially
+            st.session_state['second_validate'] = False  # Reset second validation state
+            if 'chatgpt_response' in st.session_state:
+                del st.session_state['chatgpt_response']
+            if 'correct_answer' in st.session_state:
+                del st.session_state['correct_answer']
+            if 'annotator_metadata' in st.session_state:
+                del st.session_state['annotator_metadata']
 
         # Step 2: Fetch ChatGPT response
-        if st.button("Validate") or ('chatgpt_response' in st.session_state and st.session_state.get('selected_case') == selected_case):
-            st.session_state['selected_case'] = selected_case
-            
-            if 'chatgpt_response' not in st.session_state or st.session_state['selected_case'] != selected_case:
-                st.write(f"Validating: {selected_case}")
+        if not st.session_state.get('hide_validate_button') and (st.button("Validate") or ('chatgpt_response' in st.session_state and st.session_state.get('selected_case') == selected_case)):
+            if 'chatgpt_response' not in st.session_state:
                 try:
                     response = client.chat.completions.create(
                         model="gpt-3.5-turbo",
-                        messages=[
-                            {"role": "system", "content": "You are an AI that helps answer test cases."},
-                            {"role": "user", "content": f"Answer the following test case: {selected_case}"}
-                        ]
+                        messages=[{"role": "system", "content": "You are an AI that helps answer test cases."},
+                                  {"role": "user", "content": f"Answer the following test case: {selected_case}"}]
                     )
                     st.session_state['chatgpt_response'] = response.choices[0].message.content.strip()
                 except Exception as e:
                     st.error(f"Error calling OpenAI API: {e}")
                     return
 
-            # Step 3: Display Test Case and Responses
-            st.subheader(f"Test Case: {selected_case}")
-            st.write(f"ChatGPT Response: {st.session_state['chatgpt_response']}")
+            # Step 3: Display ChatGPT Response if "Incorrect" button hasn't been pressed
+            if not st.session_state.get('hide_chatgpt_response'):
+                st.markdown("<h3 style='color: black;'>ChatGPT Response:</h3>", unsafe_allow_html=True)
+                st.markdown(f"<div style='font-size:22px; color: black;'>{st.session_state['chatgpt_response']}</div>", unsafe_allow_html=True)
 
-            # Fetch the correct answer from the database if not already in session state
-            if 'correct_answer' not in st.session_state or st.session_state['selected_case'] != selected_case:
-                st.session_state['correct_answer'] = get_correct_answer_from_db(selected_case)
+            # Fetch the correct answer and annotator metadata from the database
+            correct_answer, annotator_metadata = get_correct_answer_and_metadata_from_db(selected_case)
+            st.session_state['correct_answer'] = correct_answer
+            st.session_state['annotator_metadata'] = annotator_metadata
 
-            # Display non-editable text area for the correct answer
+            # Always display non-editable text area for the correct answer
             st.subheader("Correct Answer (GAIA dataset)")
-            st.text_area("", value=st.session_state['correct_answer'], height=150, disabled=True)
+            st.text_area("Correct Answer", value=correct_answer, height=150, disabled=True)
 
             # Step 4: Validation Buttons
-            st.write("Is the ChatGPT response correct?")
-            col1, col2 = st.columns(2)
+            if not st.session_state.get('hide_validation_buttons'):
+                st.write("Is the ChatGPT response correct?")
+                col1, col2 = st.columns(2)
 
-            with col1:
-                if st.button("Correct"):
-                    st.success("You marked the response as Correct.")
+                task_id = test_case_dict[selected_case]  # Get the task_id for the selected case
 
-            with col2:
-                if st.button("Incorrect"):
-                    st.error("You marked the response as Incorrect.")
+                with col1:
+                    if st.button("Correct"):
+                        store_validation_result(task_id, validated=True)
+                        st.success("You marked the response as Correct.")
+
+                with col2:
+                    if st.button("Incorrect"):
+                        # Hide ChatGPT response and validation buttons, but keep the correct answer visible
+                        st.session_state['show_hint'] = True
+                        st.session_state['hide_chatgpt_response'] = True
+                        st.session_state['hide_validation_buttons'] = True
+                        st.session_state['hide_validate_button'] = True
+
+        # Hide Validate button if "Incorrect" is pressed
+        if st.session_state.get('hide_validate_button'):
+            st.empty()
+
+        # Hide ChatGPT response and validation buttons if "Incorrect" is pressed
+        if st.session_state.get('hide_chatgpt_response'):
+            st.empty()  # This clears the entire section containing the response
+
+        if st.session_state.get('hide_validation_buttons'):
+            st.empty()  # Hide the validation buttons (Correct and Incorrect)
+
+        # Show annotator metadata if available and "Incorrect" is pressed
+        if st.session_state.get('show_hint') and st.session_state.get('annotator_metadata'):
+            st.subheader("Hint (Annotator Metadata)")
+            st.text_area("Hint", value=st.session_state['annotator_metadata'], height=150, disabled=True)
+
+            # Show the second Validate button to validate with the hint
+            if not st.session_state.get('second_validate'):
+                if st.button("Validate with Hint"):
+                    # Send the test case and hint to ChatGPT
+                    try:
+                        response_with_hint = client.chat.completions.create(
+                            model="gpt-3.5-turbo",
+                            messages=[{"role": "system", "content": "You are an AI that helps answer test cases."},
+                                      {"role": "user", "content": f"Test case: {selected_case}. Hint: {st.session_state['annotator_metadata']}"}]
+                        )
+                        st.session_state['chatgpt_response_with_hint'] = response_with_hint.choices[0].message.content.strip()
+                        st.session_state['second_validate'] = True  # Mark that second validation is complete
+                    except Exception as e:
+                        st.error(f"Error calling OpenAI API with hint: {e}")
+
+            # Display ChatGPT Response after hint
+            if st.session_state.get('second_validate'):
+                st.markdown("<h3 style='color: black;'>ChatGPT Response (with hint):</h3>", unsafe_allow_html=True)
+                st.markdown(f"<div style='font-size:22px; color: black;'>{st.session_state['chatgpt_response_with_hint']}</div>", unsafe_allow_html=True)
+
+                # Correct Answer is still visible after hint is used
+                st.subheader("Correct Answer (GAIA dataset)")
+                st.text_area("Correct Answer", value=st.session_state['correct_answer'], height=150, disabled=True)
+
+                # Step 5: Additional Validation Buttons after hint
+                st.write("Is the ChatGPT response correct now?")
+                col3, col4 = st.columns(2)
+
+                with col3:
+                    if st.button("Validated with Help"):
+                        task_id = test_case_dict[selected_case]
+                        store_validation_result(task_id, validated_with_help=True)
+                        st.success("You marked the response as Correct with help.")
+
+                with col4:
+                    if st.button("Incorrect Again"):
+                        task_id = test_case_dict[selected_case]
+                        store_validation_result(task_id, not_validated=True)
+                        st.error("You marked the response as Incorrect again.")
 
     else:
         st.warning("No test cases available.")
@@ -311,13 +225,3 @@ if 'user' in st.session_state:
     application_page()
 else:
     st.error("You need to be logged in to view this page.")
-
-
-
-
-
-
-
-
-
-
