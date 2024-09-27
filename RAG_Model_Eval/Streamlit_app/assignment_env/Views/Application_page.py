@@ -129,9 +129,8 @@ def application_page():
 
             # Step 3: Display ChatGPT Response if "Incorrect" button hasn't been pressed
             if not st.session_state.get('hide_chatgpt_response'):
-                st.markdown("<h3 style='color: black;'>ChatGPT Response:</h3>", unsafe_allow_html=True)
-                st.markdown(f"<div style='font-size:22px; color: black;'>{st.session_state['chatgpt_response']}</div>", unsafe_allow_html=True)
-
+                st.markdown("<h3 style='color: white;'>ChatGPT Response:</h3>", unsafe_allow_html=True)
+                st.markdown(f"<div style='font-size:22px; color: white;'>{st.session_state['chatgpt_response']}</div>", unsafe_allow_html=True)
             # Fetch the correct answer and annotator metadata from the database
             correct_answer, annotator_metadata = get_correct_answer_and_metadata_from_db(selected_case)
             st.session_state['correct_answer'] = correct_answer
@@ -173,29 +172,27 @@ def application_page():
             st.empty()  # Hide the validation buttons (Correct and Incorrect)
 
         # Show annotator metadata if available and "Incorrect" is pressed
-        if st.session_state.get('show_hint') and st.session_state.get('annotator_metadata'):
-            st.subheader("Hint (Annotator Metadata)")
-            st.text_area("Hint", value=st.session_state['annotator_metadata'], height=150, disabled=True)
+        if st.session_state.get('show_hint'):
+            st.subheader("Annotator Metadata (Editable)")
+            new_metadata = st.text_area("Editable Metadata", value=st.session_state['annotator_metadata'], key="editable_metadata")
 
-            # Show the second Validate button to validate with the hint
-            if not st.session_state.get('second_validate'):
-                if st.button("Validate with Hint"):
-                    # Send the test case and hint to ChatGPT
-                    try:
-                        response_with_hint = client.chat.completions.create(
-                            model="gpt-3.5-turbo",
-                            messages=[{"role": "system", "content": "You are an AI that helps answer test cases."},
-                                      {"role": "user", "content": f"Test case: {selected_case}. Hint: {st.session_state['annotator_metadata']}"}]
-                        )
-                        st.session_state['chatgpt_response_with_hint'] = response_with_hint.choices[0].message.content.strip()
-                        st.session_state['second_validate'] = True  # Mark that second validation is complete
-                    except Exception as e:
-                        st.error(f"Error calling OpenAI API with hint: {e}")
+            if st.button("Validate with Edited Metadata"):
+                try:
+                    response_with_hint = client.chat.completions.create(
+                        model="gpt-3.5-turbo",
+                        messages=[{"role": "system", "content": "You are an AI that helps answer test cases."},
+                                {"role": "user", "content": f"Test case: {selected_case}. Hint: {new_metadata}"}]
+                    )
+                    st.session_state['chatgpt_response_with_hint'] = response_with_hint.choices[0].message.content.strip()
+                    st.session_state['second_validate'] = True  # Mark that second validation is complete
+                except Exception as e:
+                    st.error(f"Error calling OpenAI API with hint: {e}")
 
             # Display ChatGPT Response after hint
             if st.session_state.get('second_validate'):
-                st.markdown("<h3 style='color: black;'>ChatGPT Response (with hint):</h3>", unsafe_allow_html=True)
-                st.markdown(f"<div style='font-size:22px; color: black;'>{st.session_state['chatgpt_response_with_hint']}</div>", unsafe_allow_html=True)
+                if st.session_state.get('second_validate'):
+                    st.markdown("<h3 style='color: white;'>ChatGPT Response (with hint):</h3>", unsafe_allow_html=True)
+                    st.markdown(f"<div style='font-size:22px; color: white;'>{st.session_state['chatgpt_response_with_hint']}</div>", unsafe_allow_html=True)
 
                 # Correct Answer is still visible after hint is used
                 st.subheader("Correct Answer (GAIA dataset)")
