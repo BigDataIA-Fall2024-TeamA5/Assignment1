@@ -2,6 +2,22 @@
 
 This project is designed to build a tool for the evaluation of Retrieval-Augmented Generation (RAG) models using Streamlit and various cloud resources like AWS S3, PostgreSQL RDS, and OpenAI's GPT models.
 
+##Codelabs Link:
+
+[Codelabs Link](https://codelabs-preview.appspot.com/?file_id=1mjSKMWLaBjHpahLFToNlpkTMapciBedKwfLZGAjF07A#0)
+
+##Link for Video Submission: 
+[Video Submission](https://drive.google.com/file/d/19I_VNQc1OnEuPOMaJiJlypfMIwDwJnSX/view?usp=sharing)
+
+##Link to Working Project:
+
+[Deployment link](https://rag-model-eval.streamlit.app/)
+
+
+##Github project link:
+
+[Github Link](https://github.com/BigDataIA-Fall2024-TeamA5/Assignment1.git)
+
 ## Project Structure
 
 This repository contains the following directories and files:
@@ -132,6 +148,8 @@ Contains FastAPI configuration files.
    ```bash
    streamlit run Streamlit_app/app.py
    ```
+
+
 
 ### Contribution
 1. Saurabh Vyawahare - 40%
