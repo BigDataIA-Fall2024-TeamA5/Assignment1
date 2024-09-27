@@ -16,6 +16,9 @@ python-dotenv = "^1.0.1"
 pandas = "^2.2.3"
 matplotlib = "^3.9.2"
 psycopg2 = "^2.9.9"
+pypdf2 = "^3.0.1"
+openai = "^1.50.1"
+utils = "^1.0.2"
 
 
 [build-system]
