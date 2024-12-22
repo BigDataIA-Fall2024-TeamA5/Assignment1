@@ -150,13 +150,6 @@ Contains FastAPI configuration files.
    streamlit run Streamlit_app/app.py
    ```
 
-
-
-### Contribution
-1. Saurabh Vyawahare - 40%
-2. Aniket Patole - 40%
-3. Shreya Bage - 20%
-
 ### Usage
 1. Launch the app and log in using the required credentials.
 2. Choose a test case from the dropdown menu.
